@@ -10,6 +10,7 @@ import ClinicDashboard from './pages/clinic/Dashboard'
 import ClinicEmployees from './pages/clinic/Employees'
 import ClinicAttendance from './pages/clinic/Attendance'
 import ClinicAppointments from './pages/clinic/Appointments'
+import BookingForm from './pages/BookingForm'
 import './App.css'
 
 function App() {
@@ -33,6 +34,9 @@ function App() {
           <Route path="attendance" element={<ClinicAttendance />} />
           <Route path="appointments" element={<ClinicAppointments />} />
         </Route>
+
+        {/* 公開預約表單路由 (不需要 AdminLayout) */}
+        <Route path="/booking/:clinicId" element={<BookingForm />} />
 
         {/* 預設重定向到管理員頁面 */}
         <Route path="/" element={<Navigate to="/admin" replace />} />
