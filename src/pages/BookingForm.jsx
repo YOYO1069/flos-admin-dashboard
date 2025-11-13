@@ -46,6 +46,7 @@ export default function BookingForm() {
     setSubmitting(true)
 
     try {
+      // Insert appointment to database
       const { error } = await supabase
         .from(TABLES.APPOINTMENTS)
         .insert([{
@@ -55,6 +56,30 @@ export default function BookingForm() {
         }])
 
       if (error) throw error
+
+      // Send booking confirmation to LINE group
+      try {
+        await fetch('https://flos-attendance-bot.zeabur.app/api/booking-confirmation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            clinicId: clinicId,
+            channelId: clinic.linechannelid,
+            customerName: formData.customer_name,
+            customerPhone: formData.customer_phone,
+            appointmentDate: formData.appointment_date,
+            appointmentTime: formData.appointment_time,
+            treatment: formData.treatment,
+            doctor: formData.doctor,
+            notes: formData.notes,
+          }),
+        })
+      } catch (webhookError) {
+        console.error('Failed to send LINE notification:', webhookError)
+        // Don't fail the booking if webhook fails
+      }
 
       setSubmitted(true)
     } catch (error) {
