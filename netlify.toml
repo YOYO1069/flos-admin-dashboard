@@ -1,0 +1,52 @@
+# Netlify 部署設定檔
+# FLOS曜診所後台管理系統
+
+[build]
+  # 建置命令
+  command = "pnpm install && pnpm run build"
+  
+  # 發佈目錄
+  publish = "dist"
+  
+  # 基底目錄 (留空表示根目錄)
+  base = ""
+
+[build.environment]
+  # Node.js 版本
+  NODE_VERSION = "22.13.0"
+  
+  # pnpm 版本
+  PNPM_VERSION = "10.4.1"
+
+# 重定向規則 - SPA 路由支援
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers 設定
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # 安全性 Headers
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # 快取控制
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    # 靜態資源快取 1 年
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# 表單處理 (如需要)
+# [build.processing]
+#   skip_processing = false
+
+# Functions 設定 (如需要)
+# [functions]
+#   directory = "netlify/functions"
